@@ -118,7 +118,7 @@ where
 
 impl<K, V, const Q: usize> InternalNode<K, V, Q>
 where
-    K: Ord + Clone,
+    K: Ord + Clone + Debug,
 {
     fn new(child: BTree<K, V, Q>) -> Self {
         assert!(Q > 2, "branching factor Q must be greater than 2");
@@ -135,7 +135,7 @@ where
     fn insert(&mut self, key: K, child: BTree<K, V, Q>) {
         let idx = self.keys.binary_search(&key).unwrap_or_else(|idx| idx);
         self.keys.insert(idx, key);
-        self.children.insert(idx, child);
+        self.children.insert(idx + 1, child);
     }
 }
 
@@ -152,7 +152,8 @@ where
 
 impl<K, V, const Q: usize> BTree<K, V, Q>
 where
-    K: Ord + Clone,
+    K: Ord + Clone + Debug,
+	V: Debug
 {
     fn insert_inner(&mut self, key: K, value: V) -> Option<(K, BTree<K, V, Q>)> {
         match self {
